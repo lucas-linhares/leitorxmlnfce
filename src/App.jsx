@@ -8,7 +8,7 @@ export default function App() {
   const [resultado, setResultado] = useState(null);
   const [chaveInfo, setChaveInfo] = useState(null);
 
-  const NAMESPACE = "http://www.portalfiscal.inf.br/nfe";
+  const NAMESPACE = "www.portalfiscal.inf.br";
 
   function validarChave(chave) {
     if (!/^\d{44}$/.test(chave)) return false;
@@ -37,12 +37,12 @@ export default function App() {
         return;
       }
 
-      // Tenta buscar a tag infNFe de forma flexível
+      // Busca flexível da tag infNFe
       let infNFe = xml.getElementsByTagNameNS(NAMESPACE, "infNFe")[0] || 
                    xml.getElementsByTagName("infNFe")[0];
 
       if (!infNFe) {
-        alert(`O arquivo "${file.name}" não é um XML de NF-e válido.`);
+        alert(`O arquivo "${file.name}" não contém infNFe.`);
         return;
       }
 
@@ -67,7 +67,6 @@ export default function App() {
     const doc = xmlDocs.find(d => d.nome === xmlSelecionado)?.xml;
     if (!doc) return;
 
-    // Busca todos os itens (det)
     let itens = Array.from(doc.getElementsByTagNameNS(NAMESPACE, "det"));
     if (itens.length === 0) itens = Array.from(doc.getElementsByTagName("det"));
 
@@ -79,7 +78,7 @@ export default function App() {
       return;
     }
 
-    // Função interna para buscar valores dentro do item
+    // Função interna para buscar valores dentro das tags de produto
     const getVal = (parent, tag) => {
       let el = parent.getElementsByTagNameNS(NAMESPACE, tag)[0] || 
                parent.getElementsByTagName(tag)[0];
@@ -89,7 +88,8 @@ export default function App() {
     setResultado({
       codigo: getVal(item, "cProd"),
       descricao: getVal(item, "xProd"),
-      ncm: getVal(item, "NCM")
+      ncm: getVal(item, "NCM"),
+      cfop: getVal(item, "CFOP") // <--- Adicionado CFOP
     });
   }
 
@@ -98,7 +98,7 @@ export default function App() {
       <section className="card">
         <header className="header">
           <h1>Leitor NFC-e</h1>
-          <p>Consulta de NCM por ordem do produto</p>
+          <p>Consulta de NCM e CFOP por ordem do produto</p>
         </header>
 
         <div className="form">
@@ -156,6 +156,7 @@ export default function App() {
                 <div><span>Código</span><strong>{resultado.codigo}</strong></div>
                 <div><span>Descrição</span><strong>{resultado.descricao}</strong></div>
                 <div><span>NCM</span><strong>{resultado.ncm}</strong></div>
+                <div><span>CFOP</span><strong>{resultado.cfop}</strong></div>
               </>
             )}
           </div>
