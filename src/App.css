@@ -57,6 +57,20 @@
   user-select: none;
 }
 
+/* Estilo do novo Select */
+.xml-select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  font-size: 16px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
 .form input[type="number"] {
   width: 100%;
   padding: 10px;
@@ -111,41 +125,14 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-}
-
-.xml-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.xml-btn {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-  transition: all 0.2s;
-}
-.xml-btn.selected {
-  background-color: #4a90e2;
-  color: #fff;
-  border-color: #357ab8;
-}
-.xml-btn:hover {
-  background-color: #357ab8;
-  color: #fff;
-  border-color: #357ab8;
+  align-items: center;
 }
 
 @media (max-width: 480px) {
   .card { 
     padding: 20px 15px; 
   }
-  .form input[type="number"], .file-upload span, .xml-btn { 
+  .form input[type="number"], .file-upload span, .xml-select { 
     font-size: 14px; 
     padding: 8px; 
   }
