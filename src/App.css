@@ -1,3 +1,5 @@
+body { margin: 0; }
+
 .page {
   width: 100vw;
   height: 100vh;
@@ -7,7 +9,8 @@
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
-  margin: 0;
+  /* Garante que, se o conteúdo for maior que a tela (ex: muito zoom), a rolagem funcione */
+  overflow: auto; 
 }
 
 .card {
@@ -18,100 +21,38 @@
   max-width: 700px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   box-sizing: border-box;
-  margin: 0 auto;
+  margin: auto; /* Centraliza vertical e horizontalmente dentro do .page */
+  min-width: 300px; /* Impede que o card fique ridiculamente pequeno */
 }
 
-.header h1 { 
-  margin: 0 0 5px; 
-  font-size: 24px; 
-  color: #333; 
-}
-.header p { 
-  margin: 0 0 20px; 
-  color: #555; 
-  font-size: 16px; 
-}
-
-.form label { 
-  font-weight: 500; 
-  color: #444; 
-  margin-bottom: 5px; 
-  display: block; 
-}
-
-.file-upload {
-  display: block;
-  margin-bottom: 15px;
-  cursor: pointer;
-}
-.file-upload input {
-  display: none;
-}
+.header h1 { margin: 0 0 5px; font-size: 24px; color: #333; }
+.header p { margin: 0 0 20px; color: #555; font-size: 16px; }
+.form label { font-weight: 500; color: #444; margin-bottom: 5px; display: block; }
+.file-upload { display: block; margin-bottom: 15px; cursor: pointer; }
+.file-upload input { display: none; }
 .file-upload span {
-  display: inline-block;
-  padding: 10px 15px;
-  background-color: #4a90e2;
-  color: #fff;
-  border-radius: 6px;
-  font-size: 14px;
-  user-select: none;
+  display: inline-block; padding: 10px 15px; background-color: #4a90e2; 
+  color: #fff; border-radius: 6px; font-size: 14px; user-select: none;
 }
-
-/* Estilo do novo Select */
 .xml-select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-  color: #333;
-  font-size: 16px;
-  box-sizing: border-box;
-  cursor: pointer;
+  width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc;
+  border-radius: 6px; background-color: #fff; color: #333; font-size: 16px;
+  box-sizing: border-box; cursor: pointer;
 }
-
 .form input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-  color: #333;
-  font-size: 16px;
+  width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc;
+  border-radius: 6px; background-color: #fff; color: #333; font-size: 16px;
   box-sizing: border-box;
 }
-
 .form button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  background-color: #4a90e2;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
+  width: 100%; padding: 10px; border: none; border-radius: 6px;
+  background-color: #4a90e2; color: #fff; font-size: 16px; cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.form button:hover { 
-  background-color: #357ab8; 
-}
-
-.alert { 
-  padding: 10px 15px; 
-  border-radius: 6px; 
-  margin-bottom: 15px; 
-  font-size: 14px; 
-}
-.alert.success { 
-  background-color: #dff0d8; 
-  color: #3c763d; 
-}
-.alert.error { 
-  background-color: #f2dede; 
-  color: #a94442; 
-}
+.form button:hover { background-color: #357ab8; }
+.alert { padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; }
+.alert.success { background-color: #dff0d8; color: #3c763d; }
+.alert.error { background-color: #f2dede; color: #a94442; }
 
 .result-card {
   margin-top: 20px;
@@ -120,42 +61,41 @@
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   color: #444;
+  box-sizing: border-box;
 }
+
 .result-card div {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
   align-items: center;
+  /* Permite que o conteúdo quebre para a próxima linha se não houver espaço */
+  flex-wrap: wrap; 
 }
 
+.result-card strong {
+  word-break: break-all; /* Força quebras de linha em qualquer lugar da palavra se necessário */
+  text-align: right;     
+  max-width: 65%;
+  /* Garante que o strong se alinhe à direita quando a linha quebra */
+  margin-left: auto; 
+}
+
+.result-card span {
+  flex-shrink: 0;        
+  margin-right: 10px;    
+  font-size: 14px;
+}
+
+.error-text { 
+  color: #a94442; font-weight: bold; text-align: center; margin: 0;
+}
+
+/* Media Queries mantidas */
 @media (max-width: 480px) {
-  .card { 
-    padding: 20px 15px; 
-  }
-  .form input[type="number"], .file-upload span, .xml-select { 
-    font-size: 14px; 
-    padding: 8px; 
-  }
-  .form button { 
-    font-size: 14px; 
-    padding: 8px; 
-  }
-  .result-card { 
-    font-size: 14px; 
-    padding: 10px; 
-  }
+  .card { padding: 20px 15px; }
+  .form input[type="number"], .file-upload span, .xml-select { font-size: 14px; padding: 8px; }
+  .form button { font-size: 14px; padding: 8px; }
+  .result-card { font-size: 14px; padding: 10px; }
 }
-
-@media (min-width: 1024px) {
-  .card {
-    max-width: 800px;
-    padding: 40px 35px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .card {
-    max-width: 900px;
-    padding: 50px 40px;
-  }
-}
+/* ... outras media queries ... */
