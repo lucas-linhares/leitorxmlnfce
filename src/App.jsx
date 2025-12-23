@@ -97,7 +97,7 @@ export default function App() {
     <main className="page">
       <section className="card">
         <header className="header">
-          <h1>Leitor NFC-e</h1>
+          <h1>Leitor de NFC-e</h1>
           <p>Consulta de NCM e CFOP por ordem do produto</p>
         </header>
 
