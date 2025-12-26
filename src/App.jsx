@@ -76,6 +76,9 @@ export default function App() {
     if (!item) {
       setResultado({ erro: "Produto não encontrado para essa ordem." });
       return;
+    } else if (item === "") {
+      setResultado({ erro: "Ordem do produto não informada." })
+      return;
     }
 
     // Função interna para buscar valores dentro das tags de produto
