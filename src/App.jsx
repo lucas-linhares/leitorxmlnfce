@@ -198,7 +198,7 @@ export default function App() {
                 {/* 🔹 BOTÃO DE CONSULTA DO NCM ATUALIZADO */}
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button
-                    style={{ marginTop: "12px" }}
+                    style={{ marginTop: "12px", backgroundColor: "#3c763d" }}
                     onClick={() => consultarNcmAtualizado(resultado.ncm)}
                     >
                     Consultar NCM atualizado
