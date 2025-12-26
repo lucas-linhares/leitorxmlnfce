@@ -196,12 +196,14 @@ export default function App() {
                 <div><span>CFOP</span><strong>{resultado.cfop}</strong></div>
 
                 {/* 🔹 BOTÃO DE CONSULTA DO NCM ATUALIZADO */}
-                <button
-                  style={{ marginTop: "12px" }}
-                  onClick={() => consultarNcmAtualizado(resultado.ncm)}
-                >
-                  Consultar NCM atualizado
-                </button>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <button
+                    style={{ marginTop: "12px" }}
+                    onClick={() => consultarNcmAtualizado(resultado.ncm)}
+                    >
+                    Consultar NCM atualizado
+                  </button>
+                </div>
               </>
             )}
           </div>
