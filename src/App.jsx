@@ -37,9 +37,9 @@ export default function App() {
         return;
       }
 
-      // Busca flexível da tag infNFe
-      let infNFe = xml.getElementsByTagNameNS(NAMESPACE, "infNFe")[0] || 
-                   xml.getElementsByTagName("infNFe")[0];
+      let infNFe =
+        xml.getElementsByTagNameNS(NAMESPACE, "infNFe")[0] ||
+        xml.getElementsByTagName("infNFe")[0];
 
       if (!infNFe) {
         alert(`O arquivo "${file.name}" não contém infNFe.`);
@@ -53,7 +53,7 @@ export default function App() {
         if (prev.find(d => d.nome === file.name)) return prev;
         return [...prev, { nome: file.name, xml, chave }];
       });
-      
+
       setXmlSelecionado(file.name);
       setChaveInfo({ chave, valida: validarChave(chave) });
       setResultado(null);
@@ -78,19 +78,42 @@ export default function App() {
       return;
     }
 
-    // Função interna para buscar valores dentro das tags de produto
+    const prod =
+      item.getElementsByTagNameNS(NAMESPACE, "prod")[0] ||
+      item.getElementsByTagName("prod")[0];
+
+    if (!prod) {
+      setResultado({ erro: "Tag <prod> não encontrada." });
+      return;
+    }
+
     const getVal = (parent, tag) => {
-      let el = parent.getElementsByTagNameNS(NAMESPACE, tag)[0] || 
-               parent.getElementsByTagName(tag)[0];
+      let el =
+        parent.getElementsByTagNameNS(NAMESPACE, tag)[0] ||
+        parent.getElementsByTagName(tag)[0];
       return el ? el.textContent : "—";
     };
 
     setResultado({
-      codigo: getVal(item, "cProd"),
-      descricao: getVal(item, "xProd"),
-      ncm: getVal(item, "NCM"),
-      cfop: getVal(item, "CFOP") // <--- Adicionado CFOP
+      codigo: getVal(prod, "cProd"),
+      descricao: getVal(prod, "xProd"),
+      ncm: getVal(prod, "NCM"),
+      cfop: getVal(prod, "CFOP")
     });
+  }
+
+  // 🔹 NOVA FUNÇÃO – consulta NCM atualizado no Portal Único Siscomex
+  function consultarNcmAtualizado(ncm) {
+    if (!ncm || ncm === "—") return;
+
+    const ncmLimpo = ncm.replace(/\D/g, "");
+    if (ncmLimpo.length < 2) return;
+
+    const ncmBase = ncmLimpo.slice(0, -1); // remove o último dígito
+
+    const url = `https://portalunico.siscomex.gov.br/classif/#/nomenclatura/${ncmBase}?criterio=${ncmLimpo}`;
+
+    window.open(url, "_blank");
   }
 
   return (
@@ -103,26 +126,40 @@ export default function App() {
 
         <div className="form">
           <label className="file-upload">
-            <input type="file" accept=".xml" multiple onChange={e => Array.from(e.target.files).forEach(lerXML)} />
+            <input
+              type="file"
+              accept=".xml"
+              multiple
+              onChange={e =>
+                Array.from(e.target.files).forEach(lerXML)
+              }
+            />
             <span>Selecionar XML(s)</span>
           </label>
 
           {xmlDocs.length > 0 && (
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ fontSize: '14px', marginBottom: '5px', display: 'block' }}>Selecione o arquivo:</label>
+            <div style={{ marginBottom: "15px" }}>
+              <label style={{ fontSize: "14px", marginBottom: "5px", display: "block" }}>
+                Selecione o arquivo:
+              </label>
               <select
                 className="xml-select"
                 value={xmlSelecionado}
-                onChange={(e) => {
+                onChange={e => {
                   const nome = e.target.value;
                   const doc = xmlDocs.find(d => d.nome === nome);
                   setXmlSelecionado(nome);
-                  setChaveInfo({ chave: doc.chave, valida: validarChave(doc.chave) });
+                  setChaveInfo({
+                    chave: doc.chave,
+                    valida: validarChave(doc.chave)
+                  });
                   setResultado(null);
                 }}
               >
-                {xmlDocs.map((doc) => (
-                  <option key={doc.nome} value={doc.nome}>{doc.nome}</option>
+                {xmlDocs.map(doc => (
+                  <option key={doc.nome} value={doc.nome}>
+                    {doc.nome}
+                  </option>
                 ))}
               </select>
             </div>
@@ -150,13 +187,21 @@ export default function App() {
         {resultado && (
           <div className="result-card">
             {resultado.erro ? (
-              <p style={{ color: '#a94442', textAlign: 'center', margin: 0 }}>{resultado.erro}</p>
+              <p className="error-text">{resultado.erro}</p>
             ) : (
               <>
                 <div><span>Código</span><strong>{resultado.codigo}</strong></div>
                 <div><span>Descrição</span><strong>{resultado.descricao}</strong></div>
                 <div><span>NCM</span><strong>{resultado.ncm}</strong></div>
                 <div><span>CFOP</span><strong>{resultado.cfop}</strong></div>
+
+                {/* 🔹 BOTÃO DE CONSULTA DO NCM ATUALIZADO */}
+                <button
+                  style={{ marginTop: "12px" }}
+                  onClick={() => consultarNcmAtualizado(resultado.ncm)}
+                >
+                  Consultar NCM atualizado
+                </button>
               </>
             )}
           </div>
