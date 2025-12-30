@@ -57,8 +57,33 @@ export default function App() {
       setXmlSelecionado(file.name);
       setChaveInfo({ chave, valida: validarChave(chave) });
       setResultado(null);
+      setOrdemProduto("");
     };
     reader.readAsText(file);
+  }
+
+  function getProdutosDoXmlSelecionado() {
+    const doc = xmlDocs.find(d => d.nome === xmlSelecionado)?.xml;
+    if (!doc) return [];
+
+    let itens = Array.from(doc.getElementsByTagNameNS(NAMESPACE, "det"));
+    if (itens.length === 0) itens = Array.from(doc.getElementsByTagName("det"));
+
+    return itens.map((item, index) => {
+      const prod =
+        item.getElementsByTagNameNS(NAMESPACE, "prod")[0] ||
+        item.getElementsByTagName("prod")[0];
+
+      const xProd =
+        prod?.getElementsByTagNameNS(NAMESPACE, "xProd")[0]?.textContent ||
+        prod?.getElementsByTagName("xProd")[0]?.textContent ||
+        "Produto sem descrição";
+
+      return {
+        ordem: index + 1,
+        descricao: xProd
+      };
+    });
   }
 
   function buscarProduto() {
@@ -102,17 +127,14 @@ export default function App() {
     });
   }
 
-  // 🔹 NOVA FUNÇÃO – consulta NCM atualizado no Portal Único Siscomex
   function consultarNcmAtualizado(ncm) {
     if (!ncm || ncm === "—") return;
 
     const ncmLimpo = ncm.replace(/\D/g, "");
     if (ncmLimpo.length < 2) return;
 
-    const ncmBase = ncmLimpo.slice(0, -1); // remove o último dígito
-
+    const ncmBase = ncmLimpo.slice(0, -1);
     const url = `https://portalunico.siscomex.gov.br/classif/#/nomenclatura/${ncmBase}?criterio=${ncmLimpo}`;
-
     window.open(url, "_blank");
   }
 
@@ -121,7 +143,7 @@ export default function App() {
       <section className="card">
         <header className="header">
           <h1>Leitor de NFC-e</h1>
-          <p>Consulta de NCM e CFOP por ordem do produto</p>
+          <p>Consulta de NCM e CFOP por produto</p>
         </header>
 
         <div className="form">
@@ -139,9 +161,7 @@ export default function App() {
 
           {xmlDocs.length > 0 && (
             <div style={{ marginBottom: "15px" }}>
-              <label style={{ fontSize: "14px", marginBottom: "5px", display: "block" }}>
-                Selecione o arquivo:
-              </label>
+              <label>Selecione o arquivo:</label>
               <select
                 className="xml-select"
                 value={xmlSelecionado}
@@ -154,6 +174,7 @@ export default function App() {
                     valida: validarChave(doc.chave)
                   });
                   setResultado(null);
+                  setOrdemProduto("");
                 }}
               >
                 {xmlDocs.map(doc => (
@@ -172,14 +193,20 @@ export default function App() {
             </div>
           )}
 
-          <label>Ordem do produto</label>
-          <input
-            type="number"
-            min="1"
+          {/* 🔹 DROPDOWN DE PRODUTOS */}
+          <label>Produto</label>
+          <select
+            className="xml-select"
             value={ordemProduto}
             onChange={e => setOrdemProduto(e.target.value)}
-            placeholder="Ex: 1, 2, 3..."
-          />
+          >
+            <option value="">Selecione um produto</option>
+            {getProdutosDoXmlSelecionado().map(p => (
+              <option key={p.ordem} value={p.ordem}>
+                {p.ordem} - {p.descricao}
+              </option>
+            ))}
+          </select>
 
           <button onClick={buscarProduto}>Buscar</button>
         </div>
@@ -195,12 +222,11 @@ export default function App() {
                 <div><span>NCM</span><strong>{resultado.ncm}</strong></div>
                 <div><span>CFOP</span><strong>{resultado.cfop}</strong></div>
 
-                {/* 🔹 BOTÃO DE CONSULTA DO NCM ATUALIZADO */}
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button
                     style={{ marginTop: "12px", backgroundColor: "#357ab8", color: "#fff" }}
                     onClick={() => consultarNcmAtualizado(resultado.ncm)}
-                    >
+                  >
                     Consultar NCM atualizado
                   </button>
                 </div>
